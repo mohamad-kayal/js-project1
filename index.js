@@ -1,121 +1,73 @@
+const GITHUB_API_URL = 'https://api.github.com';
 
-  // wrapping the whole script with onload function so it assures that the script won't work if the html page isn't fully loaded 
-   window.onload = () => {
-  // Better variable names -- decrlaring variables to use
+function getGithubRepoSearchUrl(query) {
+  return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
+}
 
-   const SearchInput = document.querySelector("#input");
-   const SubmitButton = document.querySelector("#btn-submit");
-   const responseTag = document.querySelector("#response");
-  
-  // adding Event Listener for the button to make the search
+function searchRepos(query, startCallback, callback) {
+  if (startCallback) {
+    startCallback();
+  }
 
-   SubmitButton.addEventListener('click',()=>{
-      getRepositories();
-   });
+  const response = fetch(getGithubRepoSearchUrl(query))
+    .then(response => response.json())
+    .then(data => {
+      if (callback) {
+        callback(data);
+      }
+    })
+    .catch(() => {
 
-// helper function to get the repos from github
-   function getRepositories() {
+    });
+}
 
-// conditional -- handling exceptions
-     if (SearchInput.value === '') {
-      
-         alert('Please Enter Project name');
+window.onload = () => {
+  const searchInput = document.querySelector("#input");
+  const submitButton = document.querySelector("#btn-submit");
+  const listElement = document.querySelector("#response");
+  const loadingElement = document.querySelector("#loading");
 
-     } 
-       else {
-        responseTag.innerHTML=''; 
-         //declaring variables to handle the required data
-         var ProjectName; var RepoLink; var Description; var UserProfile;
-         // sending the request and fetching the JSON file  -- resuming that we are getting 10 items per page -- will add pagination later
-         var url=`https://api.github.com/search/repositories?q=${SearchInput.value}&page=1&per_page=10`     
-         var response=fetch(url)
-         .then(response => response.json())
-         .then(data => {
-         console.log(data.items);
-         items=JSON.parse(JSON.stringify(data.items));
-         items.forEach(item =>{
+  const toggleLoading = (show = false) => {
+    loadingElement.style.display = show ? 'block' : 'none';
+  };
 
-          // assigning the variables 
+  const appendRepo = ({ owner: { url }, full_name: fullName, html_url: htmlUrl, description }) => {
+    const repoElement = document.createElement('li');
 
-          UserProfile = item.owner.url;
-          ProjectName=item.full_name;
-          RepoLink = item.html_url;
-          Description = item.description;
+    const repoNameElement = document.createElement('h3');
+    repoNameElement.innerText = fullName;
+    repoElement.appendChild(repoNameElement);
 
-                 //-----------------------------------------------------------------------
+    const repoDescElement = document.createElement('p');
+    repoDescElement.innerText = description;
+    repoElement.appendChild(repoDescElement);
 
-            //create a div and text for the project name
-          let ProjectDiv = document.createElement('div');
-            
-            //modification for var ${name}
-            let ProjectNameNode = document.createTextNode(`Project Name: ${ProjectName}`);
+    const repoUserUrlElem = document.createElement('a');
+    repoUserUrlElem.href = url;
+    repoUserUrlElem.innerText = 'User Profile';
+    repoElement.appendChild(repoUserUrlElem);
 
-            //appends the username to a div(userDive)
-            ProjectDiv.appendChild(ProjectNameNode);
+    repoElement.appendChild(document.createElement('br'));
 
-            //appends the div(userDive) to the main Response div(responseTag)
-            responseTag.appendChild(ProjectDiv);
+    const repoUrlElem = document.createElement('a');
+    repoUrlElem.href = htmlUrl;
+    repoUrlElem.innerText = 'Repository\'s home page';
+    repoElement.appendChild(repoUrlElem);
 
-        //       //-----------------------------------------------------------------------
+    listElement.appendChild(repoElement);
+  };
 
-            //create a div and text for the project name
-          let DescriptionDiv = document.createElement('div');
-            
-            //modification for var ${name}
-            let DescriptionNode = document.createTextNode(`Project Description: ${Description}`);
+  submitButton.addEventListener('click', () => {
+    searchRepos(searchInput.value, () => {
+      toggleLoading(true);
 
-            //appends the username to a div(userDive)
-            DescriptionDiv.appendChild(DescriptionNode);
+      listElement.innerHTML = '';
+    }, ({ items }) => {
+      toggleLoading();
 
-            //appends the div(userDive) to the main Response div(responseTag)
-            responseTag.appendChild(DescriptionDiv);
+      searchInput.value = '';
 
-        //-----------------------------------------------------------------------
-
-            // create a div and text for the User Profile
-            let UserProfileDiv = document.createElement('div');
-          
-           //modification for var ${bio}
-            let UserProfileNode= document.createTextNode(`User Prfile: ${UserProfile}`);
-
-            // appends the bio to a div(bioDiv)
-            UserProfileDiv.appendChild(UserProfileNode);
-
-            // appends the div(bioDiv) to the main Response div(responseTag)
-            responseTag.appendChild(UserProfileDiv);
-
-        //--------------------------------------------------------------------------
-
-            //create a div and a link for the profile repo link
-
-            let RepoLinkDiv = document.createElement('div');
-            let RepoLinkElement = document.createElement('a');
-            let RepoLinkText = document.createTextNode(`Checkout the Repository here!`);
-            // specifices the path of the url and opens it in a new tab
-            RepoLinkElement.href = RepoLink;
-            RepoLinkElement.setAttribute('target', '_blank');
-
-            //appends the text (RepoLinkDiv) to the <a> (accountLink)
-            RepoLinkElement.appendChild(RepoLinkText);
-
-            //appends the <a> (RepoLinkElemment) to a div (accountDiv)
-            RepoLinkDiv.appendChild(RepoLinkElement);
-
-            // appends the div (RepoLinkDev) to the main Response Div(responseTag)
-            responseTag.appendChild(RepoLinkDiv);   
-
-         }) 
-      
-         })
-
-       //clearing the input after searching
-       SearchInput.value='';
-
-     }
-   }
-
+      items.forEach(item => appendRepo(item));
+    });
+  });
 };
-
-
-   
-      
