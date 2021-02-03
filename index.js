@@ -8,8 +8,6 @@ function searchRepos(query, startCallback, callback) {
   if (startCallback) {
     startCallback();
   }
-
-
   
   const response = fetch(getGithubRepoSearchUrl(query))
     .then(response => response.json())
@@ -19,23 +17,24 @@ function searchRepos(query, startCallback, callback) {
       }
     })
     .catch((err) => {
-    alert(err);
+        const errorElement = document.querySelector("#error");
+        errorElement.innerText = ' ';
+        const toggleError = () => {
+          const errMessage = document.createElement('p');
+          errMessage.innerText = err
+          errorElement.appendChild(errMessage);
+          errorElement.style.display =  'block';
+          toggleLoading(false);
+      };
+    toggleError();
     });
 }
-window.onload = () => {
   const searchInput = document.querySelector("#input");
   const listElement = document.querySelector("#response");
   const loadingElement = document.querySelector("#loading");
-  const errorElement = document.querySelector("#error");
   const toggleLoading = (show = false) => {
     loadingElement.style.display = show ? 'block' : 'none';
   };
-  // const toggleError = (disp=false, errText = ''  ) =>{
-  //   const errMessage = document.createElement('p');
-  //   errMessage.innerText = errText
-  //   errorElement.appendChild(errMessage);
-  //   errorElement.style.display = disp ? 'block' : 'none';
-  // };
 
   const appendRepo = ({ owner: { html_url:url}, full_name: fullName, html_url: htmlUrl, description }) => {
     const repoElement = document.createElement('li');
@@ -78,5 +77,4 @@ window.onload = () => {
         items.forEach(item => appendRepo(item));
       
     });
-  }
 };
