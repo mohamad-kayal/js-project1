@@ -1,7 +1,7 @@
 const GITHUB_API_URL = 'https://api.github.com';
 let makeSearch = " ";
 function getGithubRepoSearchUrl(query) {
-  return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
+  return `${GITHUB_API_URL}/search/reposit123ories?q=${query}&page=1&per_page=10`;
 }
 
 function searchRepos(query, startCallback, callback) {
@@ -17,7 +17,7 @@ function searchRepos(query, startCallback, callback) {
       }
     })
     .catch((err) => {
-    
+    alert(err);
     });
 }
 
@@ -62,12 +62,13 @@ window.onload = () => {
       toggleLoading(true);
 
       listElement.innerHTML = '';
-    }, ({ items }) => {
-      toggleLoading();
+    }, ({ items }) => { 
 
-      searchInput.value = '';
-
-      items.forEach(item => appendRepo(item));
+        if(!items) throw "Undefined";;
+        toggleLoading();
+        searchInput.value = '';
+        items.forEach(item => appendRepo(item));
+      
     });
   }
 };
