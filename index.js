@@ -1,5 +1,25 @@
 const GITHUB_API_URL = 'https://api.github.com';
-let makeSearch = " ";
+const searchInput = document.querySelector("#input");
+const listElement = document.querySelector("#response");
+const loadingElement = document.querySelector("#loading");
+const errorElement = document.querySelector("#error");
+function makeSearch () { // combining the onClick with the form
+
+  searchRepos(searchInput.value, () => {
+    // toggleError(false);
+    toggleLoading(true);
+    listElement.innerHTML = '';
+  }, ({ items }) => {
+
+      if(!items) throw "The Request is facing an error right now.\n If the problem persists, please don't contact any onoe";
+      if(items ['length'] == 0) throw "No Results";
+      toggleLoading();
+      searchInput.value = '';
+      items.forEach(item => appendRepo(item));
+    
+  });
+};
+window.makeSearch = makeSearch; //making the makeSearch function Globally scoped --webpack
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
@@ -20,11 +40,7 @@ function searchRepos(query, startCallback, callback) {
       toggleError(true,err);
     });
 }
-  const searchInput = document.querySelector("#input");
-  const listElement = document.querySelector("#response");
-  const loadingElement = document.querySelector("#loading");
-  const errorElement = document.querySelector("#error");
-  
+ 
   const toggleLoading = (show = false) => {
     loadingElement.style.display = show ? 'block' : 'none';
   };
@@ -65,19 +81,3 @@ function searchRepos(query, startCallback, callback) {
     listElement.appendChild(repoElement);
   };
 
-   makeSearch =()=> { // combining the onClick with the form
-
-    searchRepos(searchInput.value, () => {
-      // toggleError(false);
-      toggleLoading(true);
-      listElement.innerHTML = '';
-    }, ({ items }) => {
-
-        if(!items) throw "The Request is facing an error right now.\n If the problem persists, please don't contact any onoe";
-        if(items ['length'] == 0) throw "No Results";
-        toggleLoading();
-        searchInput.value = '';
-        items.forEach(item => appendRepo(item));
-      
-    });
-};
