@@ -17,24 +17,26 @@ function searchRepos(query, startCallback, callback) {
       }
     })
     .catch((err) => {
-        const errorElement = document.querySelector("#error");
-        errorElement.innerText = ' ';
-        const toggleError = () => {
-          const errMessage = document.createElement('p');
-          errMessage.innerText = err
-          errorElement.appendChild(errMessage);
-          errorElement.style.display =  'block';
-          toggleLoading(false);
-      };
-    toggleError();
+      toggleError(true,err);
     });
 }
   const searchInput = document.querySelector("#input");
   const listElement = document.querySelector("#response");
   const loadingElement = document.querySelector("#loading");
+  const errorElement = document.querySelector("#error");
+  
   const toggleLoading = (show = false) => {
     loadingElement.style.display = show ? 'block' : 'none';
   };
+  errorElement.innerText = ' ';
+  
+  const toggleError = (show = false, errorMessage) => {
+    const errMessage = document.createElement('p');
+    errMessage.innerText = errorMessage
+    errorElement.appendChild(errMessage);
+    errorElement.style.display =  show ? 'block' : 'none';
+    toggleLoading(false);
+};
 
   const appendRepo = ({ owner: { html_url:url}, full_name: fullName, html_url: htmlUrl, description }) => {
     const repoElement = document.createElement('li');
