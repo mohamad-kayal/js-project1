@@ -32,6 +32,7 @@ function searchRepos(query, startCallback, callback) {
   
   const toggleError = (show = false, errorMessage) => {
     const errMessage = document.createElement('p');
+    errorElement.innerHTML = " ";
     errMessage.innerText = errorMessage
     errorElement.appendChild(errMessage);
     errorElement.style.display =  show ? 'block' : 'none';
