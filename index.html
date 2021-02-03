@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-
-  <title>js-project</title>
-  
-  <link rel="stylesheet" href="index.css" />
+  <head>
+    
+    <title>js-project</title>
+    <link rel="stylesheet" href="index.css" />
+    <script language="javascript" src="index.js" type="text/javascript"></script>
 
 </head>
 <body>
   <h2>Search for Rapositories </h2>
+  
+  <form action="#" onsubmit="makeSearch();return false">
+    <input type="text" id="input" required="required" placeholder="Search for a repository..." />
 
-  <form onsubmit="return false">
-    <input type="text" id="input" placeholder="Search for a repository..." />
-
-    <button id="btn-submit" type="submit">Search!</button>
+    <input id="btn-submit" type="submit" value="Search!" />
   </form>
 
   <ul id="response">
@@ -21,7 +21,6 @@
 
   <div id="loading" style="display: none;">Loading...</div>
 
-	<script language="javascript" src="index.js" type="text/javascript"></script>
 
 </body>
 </html>

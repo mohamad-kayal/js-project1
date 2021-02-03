@@ -1,5 +1,5 @@
 const GITHUB_API_URL = 'https://api.github.com';
-
+let makeSearch = " ";
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
@@ -8,7 +8,7 @@ function searchRepos(query, startCallback, callback) {
   if (startCallback) {
     startCallback();
   }
-
+  
   const response = fetch(getGithubRepoSearchUrl(query))
     .then(response => response.json())
     .then(data => {
@@ -16,14 +16,13 @@ function searchRepos(query, startCallback, callback) {
         callback(data);
       }
     })
-    .catch(() => {
-
+    .catch((err) => {
+    
     });
 }
 
 window.onload = () => {
   const searchInput = document.querySelector("#input");
-  const submitButton = document.querySelector("#btn-submit");
   const listElement = document.querySelector("#response");
   const loadingElement = document.querySelector("#loading");
 
@@ -57,7 +56,8 @@ window.onload = () => {
     listElement.appendChild(repoElement);
   };
 
-  submitButton.addEventListener('click', () => {
+   makeSearch =()=> { // combining the onClick with the form
+
     searchRepos(searchInput.value, () => {
       toggleLoading(true);
 
@@ -69,5 +69,5 @@ window.onload = () => {
 
       items.forEach(item => appendRepo(item));
     });
-  });
+  }
 };
