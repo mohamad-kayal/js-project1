@@ -19,7 +19,7 @@ function searchRepos(query, startCallback, callback) {
       }
     })
     .catch((err) => {
-    toggleError(true,err);
+    // toggleError(true,err);
     });
 }
 window.onload = () => {
@@ -30,14 +30,14 @@ window.onload = () => {
   const toggleLoading = (show = false) => {
     loadingElement.style.display = show ? 'block' : 'none';
   };
-  const toggleError = (show=false, errMessage = ''  ) =>{
-    let errMessage = document.createElement('p');
-    errMessage.innerText = errMessage
-    errorElement.appendChild(errMessage);
-    errorElement.style.display = show ? 'block' : 'none';
-  };
+  // const toggleError = (show=false, errMessage = ''  ) =>{
+  //   const errMessage = document.createElement('p');
+  //   errMessage.innerText = errMessage
+  //   errorElement.appendChild(errMessage);
+  //   errorElement.style.display = show ? 'block' : 'none';
+  // };
 
-  const appendRepo = ({ owner: { url }, full_name: fullName, html_url: htmlUrl, description }) => {
+  const appendRepo = ({ owner: { html_url:url}, full_name: fullName, html_url: htmlUrl, description }) => {
     const repoElement = document.createElement('li');
 
     const repoNameElement = document.createElement('h3');
@@ -66,7 +66,7 @@ window.onload = () => {
    makeSearch =()=> { // combining the onClick with the form
 
     searchRepos(searchInput.value, () => {
-      toggleError(false);
+      // toggleError(false);
       toggleLoading(true);
       listElement.innerHTML = '';
     }, ({ items }) => {
