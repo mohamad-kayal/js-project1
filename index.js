@@ -24,7 +24,7 @@ const listElement = document.querySelector("#response");
 const loadingElement = document.querySelector("#loading");
 const errorElement = document.querySelector("#error");
 const showingResultFor = document.querySelector("#showingResultsFor"); 
-const searchForm = document.querySelector("#form")
+const searchForm = document.querySelector("#form");
 const errMessage = document.createElement('p');
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
@@ -38,9 +38,13 @@ const toggleError = (show = false, errorMessage) => {
   errorElement.style.display =  show ? 'block' : 'none';
 };
 
-const appendRepo = ({ owner: { html_url:url}, full_name: fullName, html_url: htmlUrl, description }) => {
+const appendRepo = ({ owner: { html_url:url}, owner: {avatar_url},full_name: fullName, html_url: htmlUrl, description }) => {
+ 
   const repoElement = document.createElement('li');
-
+  
+  const userPersonalPic = document.createElement('img');
+  userPersonalPic.src = avatar_url;
+  repoElement.appendChild(userPersonalPic);
   const repoDescElement = document.createElement('h3');
   repoDescElement.innerText = description;
   repoElement.appendChild(repoDescElement);

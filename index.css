@@ -25,7 +25,11 @@ li {
 li p {
   font: 200 12px/1.5 Georgia, Times New Roman, serif;
 }
-
+li img{
+  float: left;
+  width: 20%;
+  margin: 0 15px 0 0;
+}
 li:hover {
   background: #eee;
   cursor: pointer;
