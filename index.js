@@ -22,9 +22,10 @@ function searchRepos(query, startCallback, callback) {
 const searchInput = document.querySelector("#input");
 const listElement = document.querySelector("#response");
 const loadingElement = document.querySelector("#loading");
-const errorElement = document.querySelector("#error"); 
+const errorElement = document.querySelector("#error");
+const showingResultFor = document.querySelector("#showingResultsFor"); 
+const searchForm = document.querySelector("#form")
 const errMessage = document.createElement('p');
-
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
@@ -70,15 +71,19 @@ function makeSearch () { // combining the onClick with the form
     clearToggles(false,true);
   },
   ({ items }) => {
-
+    showResultsFor(true,searchInput.value);
     if(!items) throw "The Request is facing an error right now.\n If the problem persists, please don't contact customer service";
     if(items ['length'] == 0) throw "No Results";
     toggleLoading();
-    searchInput.value = '';
+    searchForm.reset();
     items.forEach(item => appendRepo(item));
   });
 };
 function clearToggles(clearLoading = false ,clearError = false ){
   if (clearLoading) loadingElement.style.display = 'none' ; 
   if (clearError) errorElement.style.display= 'none' ;
+}
+function showResultsFor(show = false, textInput = ' '){
+  showingResultFor.style.display = show? 'block' : 'none' ;
+  showingResultFor.innerText = `Showing Results for: ${textInput}`;
 }
