@@ -41,14 +41,14 @@ const toggleError = (show = false, errorMessage) => {
 const appendRepo = ({ owner: { html_url:url}, full_name: fullName, html_url: htmlUrl, description }) => {
   const repoElement = document.createElement('li');
 
-  const repoNameElement = document.createElement('h3');
-  repoNameElement.innerText = fullName;
-  repoElement.appendChild(repoNameElement);
-
-  const repoDescElement = document.createElement('p');
+  const repoDescElement = document.createElement('h3');
   repoDescElement.innerText = description;
   repoElement.appendChild(repoDescElement);
 
+  const repoNameElement = document.createElement('p');
+  repoNameElement.innerText = fullName;
+  repoElement.appendChild(repoNameElement);
+  
   const repoUserUrlElem = document.createElement('a');
   repoUserUrlElem.href = url;
   repoUserUrlElem.innerText = 'User Profile';
