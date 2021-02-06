@@ -8,3 +8,7 @@
 # choose and use an echo system -- New
 # write unit tests -- New
 # make sure you understand why .2 + .1 not equal to .3 -- New
+
+# next
+# rewrite the project with Typescript
+# write a slider project
