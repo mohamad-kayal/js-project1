@@ -3,6 +3,22 @@ function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
+let searchInput;
+let listElement;
+let loadingElement;
+let errorElement;
+let showingResultFor;
+let searchForm;
+
+window.onload = () => {
+  searchInput = document.querySelector('#input');
+  listElement = document.querySelector('#response');
+  loadingElement = document.querySelector('#loading');
+  errorElement = document.querySelector('#error');
+  showingResultFor = document.querySelector('#showingResultsFor');
+  searchForm = document.querySelector('#form');
+};
+
 function searchRepos(query, startCallback, callback) {
   if (startCallback) {
     startCallback();
@@ -11,30 +27,27 @@ function searchRepos(query, startCallback, callback) {
   const response = fetch(getGithubRepoSearchUrl(query))
     .then((response) => response.json())
     .then((data) => {
-      if (callback) {
-        callback(data);
-      }
+      callback(data);
     })
-    .catch((err) => {
-      toggleError(true, 'Sorry, something went wrong, please, try again later.');
+    .catch(() => {
+      toggleError(
+        true,
+        'Sorry, something went wrong, please, try again later.'
+      );
+    })
+    .finally(() => {
+      searchForm.reset();
     });
+  return false;
 }
-const searchInput = document.querySelector('#input');
-const listElement = document.querySelector('#response');
-const loadingElement = document.querySelector('#loading');
-const errorElement = document.querySelector('#error');
-const showingResultFor = document.querySelector('#showingResultsFor');
-const searchForm = document.querySelector('#form');
-const errMessage = document.createElement('h4');
+
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 const toggleError = (show = false, errorMessage) => {
-  showResultsFor();
-  errMessage.innerText = errorMessage;
-  clearToggles(true, true);
-  // toggleLoading(false);
-  errorElement.appendChild(errMessage);
+  toggleShowingResults();
+  toggleLoading();
+  errorElement.innerText = errorMessage;
   errorElement.style.display = show ? 'block' : 'none';
 };
 
@@ -46,10 +59,11 @@ const appendRepo = ({
   description,
 }) => {
   const repoElement = document.createElement('li');
-
   const userPersonalPic = document.createElement('img');
+
   userPersonalPic.src = avatar_url;
   repoElement.appendChild(userPersonalPic);
+
   const repoDescElement = document.createElement('h3');
   repoDescElement.innerText = description;
   repoElement.appendChild(repoDescElement);
@@ -69,32 +83,32 @@ const appendRepo = ({
   repoUrlElem.href = htmlUrl;
   repoUrlElem.innerText = "Repository's home page";
   repoElement.appendChild(repoUrlElem);
-
   listElement.appendChild(repoElement);
 };
 
+// combining the onClick with the form
 function makeSearch() {
-  // combining the onClick with the form
+  if (errorElement.innerText != '') {
+    toggleError();
+  }
   searchRepos(
     searchInput.value,
     () => {
       toggleLoading(true);
-      listElement.innerHTML = '';
-      clearToggles(false, true);
+      clearList();
     },
     ({ items }) => {
-      showResultsFor(true, searchInput.value);
+      toggleShowingResults(true, searchInput.value);
       toggleLoading();
-      searchForm.reset();
       items.forEach((item) => appendRepo(item));
     }
   );
 }
-function clearToggles(clearLoading = false, clearError = false) {
-  if (clearLoading) loadingElement.style.display = 'none';
-  if (clearError) errorElement.style.display = 'none';
-}
-function showResultsFor(show = false, textInput = ' ') {
+
+function toggleShowingResults(show = false, searchInput = ' ') {
   showingResultFor.style.display = show ? 'block' : 'none';
-  showingResultFor.innerText = `Showing Results for: ${textInput}`;
+  showingResultFor.innerText = `Showing Results for: ${searchInput}`;
+}
+function clearList() {
+  listElement.innerHTML = '';
 }
