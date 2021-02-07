@@ -29,7 +29,6 @@ const errMessage = document.createElement('h4');
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
-
 const toggleError = (show = false, errorMessage) => {
   showResultsFor();
   errMessage.innerText = errorMessage;
