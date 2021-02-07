@@ -2,7 +2,7 @@
 
 # make sure you understand stack, queue and external APIs (setTimeout) -- New
 
-# prettify -- No
+# prettify -- on review
 
 # handling errors -- No
 

@@ -16,7 +16,7 @@ function searchRepos(query, startCallback, callback) {
       }
     })
     .catch((err) => {
-      toggleError(true, err);
+      toggleError(true, 'Sorry, something went wrong, please, try again later.');
     });
 }
 const searchInput = document.querySelector('#input');
@@ -25,12 +25,13 @@ const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
 const showingResultFor = document.querySelector('#showingResultsFor');
 const searchForm = document.querySelector('#form');
-const errMessage = document.createElement('p');
+const errMessage = document.createElement('h4');
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
 const toggleError = (show = false, errorMessage) => {
+  showResultsFor();
   errMessage.innerText = errorMessage;
   clearToggles(true, true);
   // toggleLoading(false);
@@ -84,9 +85,6 @@ function makeSearch() {
     },
     ({ items }) => {
       showResultsFor(true, searchInput.value);
-      if (!items)
-        throw "The Request is facing an error right now.\n If the problem persists, please don't contact customer service";
-      if (items['length'] == 0) throw 'No Results';
       toggleLoading();
       searchForm.reset();
       items.forEach((item) => appendRepo(item));
