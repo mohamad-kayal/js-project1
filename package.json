@@ -1,0 +1,22 @@
+{
+  "name": "js-project1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Darkangel2017/js-project1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Darkangel2017/js-project1/issues"
+  },
+  "homepage": "https://github.com/Darkangel2017/js-project1#readme",
+  "description": "",
+  "devDependencies": {
+    "prettier": "2.2.1"
+  }
+}
