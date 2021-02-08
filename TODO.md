@@ -16,3 +16,16 @@
 # getting started with angular
 # getting started with react
 # getting started with vue
+# NEXT
+
+# rewrite the project with Typescript
+
+# write a slider project
+
+# understanding the difference between a framework and a library
+
+# getting started with angular
+
+# getting started with react
+
+# getting started with vue
