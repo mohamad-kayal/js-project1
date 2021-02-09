@@ -1,9 +1,11 @@
 {
   "name": "js-project1",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -15,8 +17,8 @@
     "url": "https://github.com/Darkangel2017/js-project1/issues"
   },
   "homepage": "https://github.com/Darkangel2017/js-project1#readme",
-  "description": "",
   "devDependencies": {
-    "prettier": "2.2.1"
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
   }
 }
