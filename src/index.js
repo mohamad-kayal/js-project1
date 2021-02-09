@@ -1,7 +1,10 @@
+
+
 const GITHUB_API_URL = 'https://api.github.com';
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
+
 
 let searchInput;
 let listElement;
@@ -51,6 +54,7 @@ const toggleError = (show = false, errorMessage) => {
   errorElement.style.display = show ? 'block' : 'none';
 };
 
+
 const appendRepo = ({
   owner: { html_url: url },
   owner: { avatar_url },
@@ -86,7 +90,7 @@ const appendRepo = ({
   listElement.appendChild(repoElement);
 };
 
-// combining the onClick with the form
+window.makeSearch = makeSearch;
 function makeSearch() {
   if (errorElement.innerText != '') {
     toggleError();
@@ -109,6 +113,8 @@ function toggleShowingResults(show = false, searchInput = ' ') {
   showingResultFor.style.display = show ? 'block' : 'none';
   showingResultFor.innerText = `Showing Results for: ${searchInput}`;
 }
+
 function clearList() {
   listElement.innerHTML = '';
 }
+
