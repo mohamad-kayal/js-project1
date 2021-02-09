@@ -2,15 +2,15 @@ const path = require('path');
 
 module.exports = {
     entry:[ 
-        "./src/index.js",
-        "./src/connection.js",
-        "./src/domHandler.js"
+        './src/index.js',
+        './src/connection.js',
+        './src/listHelper.js',
     ]
 
     ,
     output:{
-        path:path.resolve(__dirname,"./dist"),
-        filename: "bundle.js"
+        path:path.resolve(__dirname,'./dist'),
+        filename: 'bundle.js'
     },
-    mode: "development"
+    mode: 'development'
 }
