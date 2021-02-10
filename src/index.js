@@ -1,4 +1,4 @@
-import {getGithubRepoSearchUrl} from './connection.js';
+const getGithubRepoSearchUrl = require('../src/connection');
 import {clearList} from './listHelper.js';
 import './index.css';
 
