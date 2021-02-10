@@ -1,5 +1,7 @@
 import {getGithubRepoSearchUrl} from './connection.js';
 import {clearList} from './listHelper.js';
+import './index.css';
+
 
 let searchInput;
 let loadingElement; 
@@ -94,10 +96,12 @@ function appendRepo  ({
   listElement.appendChild(repoElement);
 };
 
+
 function toggleShowingResults(show = false, searchInput = ' ') {
   showingResultFor.style.display = show ? 'block' : 'none';
   showingResultFor.innerText = `Showing Results for: ${searchInput}`;
 }
+
 
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
@@ -109,4 +113,5 @@ const toggleError = (show = false, errorMessage) => {
   errorElement.innerText = errorMessage;
   errorElement.style.display = show ? 'block' : 'none';
 };
+
 
