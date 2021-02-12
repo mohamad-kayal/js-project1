@@ -4,7 +4,7 @@ function getGithubRepoSearchUrl(query) {
 }
 
 function searchRepos(query, startCallback, callback) {
-  // I'm fixing here
+  // I'm fixing here for a while
   if (startCallback) {
     startCallback();
   }
