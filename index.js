@@ -1,40 +1,63 @@
 const GITHUB_API_URL = 'https://api.github.com';
+
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
-function searchRepos(query, startCallback, callback) {
+let searchInput;
+let loadingElement; 
+let errorElement;
+let showingResultFor;
+let searchForm;
+let listElement;
+
+window.onload = () => {
+  searchInput = document.querySelector('#input');
+  listElement = document.querySelector('#response');    
+  loadingElement = document.querySelector('#loading');
+  errorElement = document.querySelector('#error');
+  showingResultFor = document.querySelector('#showingResultsFor');
+  searchForm = document.querySelector('#form');
+};
+
+function searchRepos(query, startCallback, callback, finalCB) {
   if (startCallback) {
     startCallback();
   }
 
-  const response = fetch(getGithubRepoSearchUrl(query))
-    .then((response) => response.json())
-    .then((data) => {
-      if (callback) {
-        callback(data);
-      }
-    })
-    .catch((err) => {
-      toggleError(true, err);
-    });
+  fetch(getGithubRepoSearchUrl(query))
+  .then((response) => response.json())
+  .then((data) => {
+
+    if (callback) {
+
+      callback(data);
+    }
+  })
+  .catch((err) => {
+    toggleError(
+      true,
+      'Sorry, something went wrong, please, try again later.'
+    );
+  })
+  .finally(() => {
+
+    if(finalCB){
+      finalCB();
+    }
+    return false;
+  })
+  
 }
-const searchInput = document.querySelector('#input');
-const listElement = document.querySelector('#response');
-const loadingElement = document.querySelector('#loading');
-const errorElement = document.querySelector('#error');
-const showingResultFor = document.querySelector('#showingResultsFor');
-const searchForm = document.querySelector('#form');
-const errMessage = document.createElement('p');
+
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
 const toggleError = (show = false, errorMessage) => {
-  errMessage.innerText = errorMessage;
-  clearToggles(true, true);
-  // toggleLoading(false);
-  errorElement.appendChild(errMessage);
+  showResultsFor();
+  toggleLoading();
+  errorElement.innerText=errorMessage;
   errorElement.style.display = show ? 'block' : 'none';
 };
 
@@ -73,30 +96,33 @@ const appendRepo = ({
   listElement.appendChild(repoElement);
 };
 
+// combining the onClick with the form
 function makeSearch() {
-  // combining the onClick with the form
+  
+  if (errorElement.innerText != '') {
+    toggleError();
+  }
+
+  //removing 'showing results for' on each search
+  showResultsFor();
   searchRepos(
     searchInput.value,
     () => {
       toggleLoading(true);
       listElement.innerHTML = '';
-      clearToggles(false, true);
     },
     ({ items }) => {
       showResultsFor(true, searchInput.value);
-      if (!items)
-        throw "The Request is facing an error right now.\n If the problem persists, please don't contact customer service";
-      if (items['length'] == 0) throw 'No Results';
       toggleLoading();
-      searchForm.reset();
       items.forEach((item) => appendRepo(item));
+    },
+    ()=>{
+      searchForm.reset();
     }
   );
 }
-function clearToggles(clearLoading = false, clearError = false) {
-  if (clearLoading) loadingElement.style.display = 'none';
-  if (clearError) errorElement.style.display = 'none';
-}
+window.makeSearch=makeSearch;
+
 function showResultsFor(show = false, textInput = ' ') {
   showingResultFor.style.display = show ? 'block' : 'none';
   showingResultFor.innerText = `Showing Results for: ${textInput}`;
