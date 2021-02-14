@@ -3,12 +3,12 @@ function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
-function searchRepos(query, startCallback, callback) {
+function searchRepos(query, startCallback, callback, catchCB, finalCB) {
   if (startCallback) {
     startCallback();
   }
   
-  const response = fetch(getGithubRepoSearchUrl(query))
+  fetch(getGithubRepoSearchUrl(query))
     .then(response => response.json())
     .then(data => {
       if (callback) {
@@ -16,27 +16,33 @@ function searchRepos(query, startCallback, callback) {
       }
     })
     .catch((err) => {
-      toggleError(true,err);
-    });
+      if (catchCB) {
+        catchCB(err);
+      }
+    })
+    .finally(() => {
+      finalCB();
+    })
 }
-const searchInput = document.querySelector("#input");
-const listElement = document.querySelector("#response");
-const loadingElement = document.querySelector("#loading");
-const errorElement = document.querySelector("#error");
-const showingResultFor = document.querySelector("#showingResultsFor"); 
-const searchForm = document.querySelector("#form");
-const errMessage = document.createElement('p');
-const toggleLoading = (show = false) => {
-  loadingElement.style.display = show ? 'block' : 'none';
-};
+
+let searchInput;
+let listElement;
+let loadingElement;
+let errorElement;
+let showingResultFor;
+let searchForm;
+let errMessage;
+
+window.onload = () => {
+  searchInput = document.querySelector("#input");
+  listElement = document.querySelector("#response");
+  loadingElement = document.querySelector("#loading");
+  errorElement = document.querySelector("#error");
+  showingResultFor = document.querySelector("#showingResultsFor");
+  searchForm = document.querySelector("#form");
+  errMessage = document.createElement('p');
+}
   
-const toggleError = (show = false, errorMessage) => {
-  errMessage.innerText = errorMessage;
-  clearToggles(true,true);
-  // toggleLoading(false);
-  errorElement.appendChild(errMessage);
-  errorElement.style.display =  show ? 'block' : 'none';
-};
 
 const appendRepo = ({ owner: { html_url:url}, owner: {avatar_url},full_name: fullName, html_url: htmlUrl, description }) => {
  
@@ -71,23 +77,50 @@ const appendRepo = ({ owner: { html_url:url}, owner: {avatar_url},full_name: ful
 function makeSearch () { // combining the onClick with the form
   searchRepos(searchInput.value, () => {
     toggleLoading(true);
-    listElement.innerHTML = '';
+    clearList();
     clearToggles(false,true);
   },
   ({ items }) => {
     showResultsFor(true,searchInput.value);
-    if(!items) throw "The Request is facing an error right now.\n If the problem persists, please don't contact customer service";
-    if(items ['length'] == 0) throw "No Results";
+    if(!items) {
+      throw "The Request is facing an error right now.\n If the problem persists, please don't contact customer service";
+    };
+    if(items ['length'] == 0) {
+      throw "No Results";
+    };
     toggleLoading();
-    searchForm.reset();
     items.forEach(item => appendRepo(item));
+  }, () => {
+    showResultsFor(false)
+    toggleError(true, 'Something went wrong, Please try again later!');
+  }, () => {
+    searchForm.reset();
   });
+  return false
 };
+
+const toggleLoading = (show = false) => {
+  loadingElement.style.display = show ? 'block' : 'none';
+};
+
+const toggleError = (show = false, errorMessage) => {
+  errMessage.innerText = errorMessage;
+  clearToggles(true,true);
+  // toggleLoading(false);
+  errorElement.appendChild(errMessage);
+  errorElement.style.display =  show ? 'block' : 'none';
+};
+
 function clearToggles(clearLoading = false ,clearError = false ){
   if (clearLoading) loadingElement.style.display = 'none' ; 
   if (clearError) errorElement.style.display= 'none' ;
-}
+};
+
 function showResultsFor(show = false, textInput = ' '){
   showingResultFor.style.display = show? 'block' : 'none' ;
   showingResultFor.innerText = `Showing Results for: ${textInput}`;
+}
+
+function clearList() {
+  listElement.innerHTML = '';
 }
