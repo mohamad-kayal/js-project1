@@ -1,3 +1,4 @@
+import './index.css';
 const GITHUB_API_URL = 'https://api.github.com';
 
 function getGithubRepoSearchUrl(query) {
@@ -34,7 +35,7 @@ function searchRepos(query, startCallback, callback, finalCB) {
       callback(data);
     }
   })
-  .catch((err) => {
+  .catch(() => {
     toggleError(
       true,
       'Sorry, something went wrong, please, try again later.'
