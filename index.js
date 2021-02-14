@@ -91,8 +91,8 @@ function makeSearch () { // combining the onClick with the form
     toggleLoading();
     items.forEach(item => appendRepo(item));
   }, () => {
-    showResultsFor(false)
-    toggleError(true, 'Something went wrong, Please try again later!');
+    toggleError(true, 'something went wrong, Please try again later!');
+    showResultsFor(false);
   }, () => {
     searchForm.reset();
   });
