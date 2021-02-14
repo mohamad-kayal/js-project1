@@ -3,7 +3,7 @@ function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
-function searchRepos(query, startCallback, callback) {
+function searchRepos(query, startCallback, callback, errorMessage, finalCB) {
   if (startCallback) {
     startCallback();
   }
@@ -15,9 +15,17 @@ function searchRepos(query, startCallback, callback) {
         callback(data);
       }
     })
-    .catch((err) => {
-      toggleError(true, err);
-    });
+    .catch(() => {
+      if(errorMessage){
+        errorMessage();
+      }
+    })
+    .finally(()=>
+    {
+        if(finalCB){
+            finalCB();
+        }
+    })
 }
 const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
@@ -25,17 +33,14 @@ const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
 const showingResultFor = document.querySelector('#showingResultsFor');
 const searchForm = document.querySelector('#form');
-const errMessage = document.createElement('p');
+
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
-const toggleError = (show = false, errorMessage) => {
-  errMessage.innerText = errorMessage;
-  clearToggles(true, true);
-  // toggleLoading(false);
-  errorElement.appendChild(errMessage);
+const toggleError = (show = false) => {
   errorElement.style.display = show ? 'block' : 'none';
+  errorElement.innerText = 'Sorry, The request is facing an error right now!';
 };
 
 const appendRepo = ({
@@ -73,29 +78,41 @@ const appendRepo = ({
   listElement.appendChild(repoElement);
 };
 
+// combining the onClick with the form
 function makeSearch() {
-  // combining the onClick with the form
+
+    //cleaning the error on each search
+    if(errorElement.innerText != ''){
+        errorElement.innerText = '';
+    }
   searchRepos(
     searchInput.value,
     () => {
-      toggleLoading(true);
       listElement.innerHTML = '';
-      clearToggles(false, true);
+      toggleLoading(true);
     },
     ({ items }) => {
-      showResultsFor(true, searchInput.value);
-      if (!items)
-        throw "The Request is facing an error right now.\n If the problem persists, please don't contact customer service";
-      if (items['length'] == 0) throw 'No Results';
+      //stopping the loading icon when the call is over
       toggleLoading();
+      if(items['length'] === 0){
+        showResultsFor();
+        toggleError(true);
+      }
+      else{
+        showResultsFor(true,searchInput.value);
+        items.forEach((item) => appendRepo(item));
+      }
+    }, () =>{
+      toggleLoading();
+      showResultsFor();
+      toggleError(true);
+    }
+    ,
+    ()=> {
       searchForm.reset();
-      items.forEach((item) => appendRepo(item));
+      return false;
     }
   );
-}
-function clearToggles(clearLoading = false, clearError = false) {
-  if (clearLoading) loadingElement.style.display = 'none';
-  if (clearError) errorElement.style.display = 'none';
 }
 function showResultsFor(show = false, textInput = ' ') {
   showingResultFor.style.display = show ? 'block' : 'none';
