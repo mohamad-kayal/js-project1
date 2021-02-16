@@ -1,31 +1,31 @@
 const GITHUB_API_URL = 'https://api.github.com';
+
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
-function searchRepos(query, startCallback, callback, errorMessage, finalCB) {
+function searchRepos(query, startCallback, callback, finalCB) {
   if (startCallback) {
     startCallback();
   }
-
-  const response = fetch(getGithubRepoSearchUrl(query))
-    .then((response) => response.json())
-    .then((data) => {
-      if (callback) {
-        callback(data);
-      }
-    })
-    .catch(() => {
-      if(errorMessage){
-        errorMessage();
-      }
-    })
-    .finally(()=>
-    {
-        if(finalCB){
-            finalCB();
-        }
-    })
+  fetch(getGithubRepoSearchUrl(query))
+  .then((response) => response.json())
+  .then((data) => {
+    if (callback) {
+      callback(data);
+    }
+  })
+  .catch((err) => {
+    if(callback){
+      callback(err);
+    }
+  })
+  .finally(()=>
+  {
+    if(finalCB){
+      finalCB();
+    }
+  })
 }
 const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
@@ -38,9 +38,9 @@ const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
-const toggleError = (show = false) => {
-  errorElement.style.display = show ? 'block' : 'none';
-  errorElement.innerText = 'Sorry, The request is facing an error right now!';
+const toggleError = (err) => {
+  errorElement.style.display = 'block';
+  errorElement.innerText = err;
 };
 
 const appendRepo = ({
@@ -85,36 +85,36 @@ function makeSearch() {
     if(errorElement.innerText != ''){
         errorElement.innerText = '';
     }
-  searchRepos(
-    searchInput.value,
-    () => {
-      listElement.innerHTML = '';
-      toggleLoading(true);
-    },
-    ({ items }) => {
+    searchRepos(
+      searchInput.value,
+      () => {
+        listElement.innerHTML = '';
+        toggleLoading(true);
+      },
+      ({ items }) => {
       //stopping the loading icon when the call is over
       toggleLoading();
-      if(items['length'] === 0){
-        showResultsFor();
-        toggleError(true);
+      if(!items){
+        toggleShowResults();
+        return toggleError('Sorry, The request is facing an error right now!');
       }
       else{
-        showResultsFor(true,searchInput.value);
+        // if the request succeed but there are no results
+        if(items['length'] == 0 ){
+          return toggleError('No results for your search, try searching for other repositories!');
+        }
+        toggleShowResults(true,searchInput.value);
         items.forEach((item) => appendRepo(item));
       }
-    }, () =>{
-      toggleLoading();
-      showResultsFor();
-      toggleError(true);
-    }
-    ,
+    },
     ()=> {
       searchForm.reset();
       return false;
     }
   );
 }
-function showResultsFor(show = false, textInput = ' ') {
+
+function toggleShowResults(show = false, textInput = ' ') {
   showingResultFor.style.display = show ? 'block' : 'none';
   showingResultFor.innerText = `Showing Results for: ${textInput}`;
 }
