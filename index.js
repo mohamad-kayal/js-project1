@@ -9,29 +9,31 @@ function searchRepos(query, startCallback, callback, finalCB) {
     startCallback();
   }
   fetch(getGithubRepoSearchUrl(query))
-  .then((response) => response.json())
-  .then((data) => {
-    if (callback) {
-      callback(data);
-    }
-  })
-  .catch((err) => {
-    if(callback){
-      callback(err);
-    }
-  })
-  .finally(()=>
-  {
-    if(finalCB){
-      finalCB();
-    }
-  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (callback) {
+        callback(null, data);
+      }
+    })
+    .catch((err) => {
+      if (callback) {
+        callback(err);
+      }
+    })
+    .finally(() => {
+      if (finalCB) {
+        finalCB();
+      }
+    });
 }
 const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
-const showingResultFor = document.querySelector('#showingResultsFor');
+const toggleShowingResultsElement = document.querySelector(
+  '#showingResultsFor'
+);
+
 const searchForm = document.querySelector('#form');
 
 const toggleLoading = (show = false) => {
@@ -80,41 +82,42 @@ const appendRepo = ({
 
 // combining the onClick with the form
 function makeSearch() {
-
-    //cleaning the error on each search
-    if(errorElement.innerText != ''){
-        errorElement.innerText = '';
-    }
-    searchRepos(
-      searchInput.value,
-      () => {
-        listElement.innerHTML = '';
-        toggleLoading(true);
-      },
-      ({ items }) => {
+  //cleaning the error on each search
+  if (errorElement.innerText != '') {
+    errorElement.innerText = '';
+  }
+  searchRepos(
+    searchInput.value,
+    () => {
+      listElement.innerHTML = '';
+      toggleLoading(true);
+    },
+    (error, { items } = '') => {
       //stopping the loading icon when the call is over
       toggleLoading();
-      if(!items){
-        toggleShowResults();
+      if (error) {
+        toggleShowingResultsElement.innerText = ' ';
         return toggleError('Sorry, The request is facing an error right now!');
-      }
-      else{
-        // if the request succeed but there are no results
-        if(items['length'] == 0 ){
-          return toggleError('No results for your search, try searching for other repositories!');
-        }
-        toggleShowResults(true,searchInput.value);
+      } 
+      else if (items['length'] === 0) {
+        toggleShowingResultsElement.innerText = ' ';
+        return toggleError(
+          'No results for your search, try searching for other repositories!'
+        );
+      } 
+      else {
+        toggleShowResults(searchInput.value);
         items.forEach((item) => appendRepo(item));
       }
     },
-    ()=> {
+    () => {
       searchForm.reset();
       return false;
     }
   );
 }
 
-function toggleShowResults(show = false, textInput = ' ') {
-  showingResultFor.style.display = show ? 'block' : 'none';
-  showingResultFor.innerText = `Showing Results for: ${textInput}`;
+function toggleShowResults(textInput = ' ') {
+  toggleShowingResultsElement.style.display = 'block';
+  toggleShowingResultsElement.innerText = `Showing Results for: ${textInput}`;
 }
