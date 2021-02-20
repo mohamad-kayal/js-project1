@@ -4,28 +4,35 @@ function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
-function searchRepos(query, startCallback, callback, finalCB) {
-  if (startCallback) {
-    startCallback();
+function doRequest(url, requestInfo = { method: 'GET' }) {
+  const { method, body, startCB, callback, endCB } = requestInfo;
+
+  if (startCB) {
+    startCB();
   }
-  fetch(getGithubRepoSearchUrl(query))
-    .then((response) => response.json())
-    .then((data) => {
+
+  fetch(url, { method: method.toUpperCase(), body: JSON.stringify(body) })
+    .then(res => {
       if (callback) {
-        callback(null, data);
+        callback(null, res.json());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (callback) {
         callback(err);
       }
     })
     .finally(() => {
-      if (finalCB) {
-        finalCB();
+      if (endCB) {
+        endCB();
       }
     });
 }
+
+function searchRepos(query, startCB, callback, endCB) {
+  doRequest(getGithubRepoSearchUrl(query), { startCB, callback, endCB });
+}
+
 const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
