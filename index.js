@@ -73,8 +73,9 @@ const appendRepo = ({
   listElement.appendChild(repoElement);
 };
 
-function makeSearch() {
-  // combining the onClick with the form
+function makeSearch(event) {
+  
+  event.preventDefault();
   searchRepos(
     searchInput.value,
     () => {
