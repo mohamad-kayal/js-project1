@@ -12,12 +12,12 @@ function doRequest(url, requestInfo = { method: 'GET' }) {
   }
 
   fetch(url, { method: method.toUpperCase(), body: JSON.stringify(body) })
-    .then(res => {
+    .then((res) => {
       if (callback) {
         callback(null, res.json());
       }
     })
-    .catch(err => {
+    .catch((err) => {
       if (callback) {
         callback(err);
       }
@@ -96,32 +96,33 @@ function makeSearch(event) {
       listElement.innerHTML = '';
       toggleLoading(true);
     },
-    ({ items }) => {
+    (error, data) => {
       //stopping the loading icon when the call is over
       toggleLoading();
       if (error) {
-        toggleShowingResultsElement.innerText = ' ';
-        return toggleError('Sorry, The request is facing an error right now!');
-      } 
-      else if (items['length'] === 0) {
-        toggleShowingResultsElement.innerText = ' ';
-        return toggleError(
+        toggleShowingResultsElement.innerText = '';
+        toggleError('Sorry, The request is facing an error right now!');
+        return false;
+      }
+      const items = { data };
+      if (!items.length) {
+        toggleShowingResultsElement.innerText = '';
+        toggleError(
           'No results for your search, try searching for other repositories!'
         );
-      } 
-      else {
-        toggleShowResults(searchInput.value);
-        items.forEach((item) => appendRepo(item));
+        return false;
       }
+      toggleShowResults(searchInput.value);
+      items.forEach((item) => appendRepo(item));
     },
     () => {
       searchForm.reset();
-      return false;
     }
   );
+  return false;
 }
 
-function toggleShowResults(textInput = ' ') {
+function toggleShowResults(textInput = '') {
   toggleShowingResultsElement.style.display = 'block';
   toggleShowingResultsElement.innerText = `Showing Results for: ${textInput}`;
 }
