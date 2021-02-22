@@ -9,7 +9,7 @@
   <body>
     <h2>Search for Repositories </h2>
     
-    <form action="#" id="form" onsubmit="makeSearch();return false">
+    <form action="#" id="form" onsubmit="return makeSearch()">
       <label for="input" id="input-label"> Enter At least 2 Characters: 
         <input type="text" id="input" required pattern=".{2,}" placeholder="Search for a repository..." />
       </label>
