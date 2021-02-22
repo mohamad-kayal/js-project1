@@ -75,6 +75,7 @@ const appendRepo = ({
 
 function makeSearch(event) {
   event.preventDefault();
+  
   searchRepos(
     searchInput.value,
     () => {
