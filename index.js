@@ -4,17 +4,18 @@ function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
 
-function doRequest(url, requestInfo = { method: 'GET' }) {
+function doRequest(url, requestInfo) {
   const { method, body, startCB, callback, endCB } = requestInfo;
 
   if (startCB) {
     startCB();
   }
 
-  fetch(url, { method: method.toUpperCase(), body: JSON.stringify(body) })
-    .then((res) => {
-      if (callback) {
-        callback(null, res.json());
+  fetch(url, { method: method || 'GET', body: JSON.stringify(body) })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data) {
+        callback(null, data);
       }
     })
     .catch((err) => {
@@ -37,9 +38,7 @@ const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
-const toggleShowingResultsElement = document.querySelector(
-  '#showingResultsFor'
-);
+const toggleShowingResultsElement = document.querySelector('#showingResultsFor');
 
 const searchForm = document.querySelector('#form');
 
@@ -62,24 +61,26 @@ const appendRepo = ({
   const repoElement = document.createElement('li');
 
   const userPersonalPic = document.createElement('img');
+  const repoDescElement = document.createElement('h3');
+  const repoNameElement = document.createElement('p');
+  const repoUserUrlElem = document.createElement('a');
+  const repoUrlElem = document.createElement('a');
+
   userPersonalPic.src = avatar_url;
   repoElement.appendChild(userPersonalPic);
-  const repoDescElement = document.createElement('h3');
+
   repoDescElement.innerText = description;
   repoElement.appendChild(repoDescElement);
 
-  const repoNameElement = document.createElement('p');
   repoNameElement.innerText = fullName;
   repoElement.appendChild(repoNameElement);
 
-  const repoUserUrlElem = document.createElement('a');
   repoUserUrlElem.href = url;
   repoUserUrlElem.innerText = 'User Profile';
   repoElement.appendChild(repoUserUrlElem);
 
   repoElement.appendChild(document.createElement('br'));
 
-  const repoUrlElem = document.createElement('a');
   repoUrlElem.href = htmlUrl;
   repoUrlElem.innerText = "Repository's home page";
   repoElement.appendChild(repoUrlElem);
@@ -87,9 +88,14 @@ const appendRepo = ({
   listElement.appendChild(repoElement);
 };
 
+// combining the onClick with the form
 function makeSearch(event) {
   event.preventDefault();
-  
+
+  if (errorElement.innerText != '') {
+    errorElement.innerText = '';
+  }
+
   searchRepos(
     searchInput.value,
     () => {
@@ -99,19 +105,23 @@ function makeSearch(event) {
     (error, data) => {
       //stopping the loading icon when the call is over
       toggleLoading();
+
       if (error) {
         toggleShowingResultsElement.innerText = '';
         toggleError('Sorry, The request is facing an error right now!');
-        return false;
+        return;
       }
-      const items = { data };
+
+      const { items } = data;
+
       if (!items.length) {
         toggleShowingResultsElement.innerText = '';
         toggleError(
           'No results for your search, try searching for other repositories!'
         );
-        return false;
+        return;
       }
+
       toggleShowResults(searchInput.value);
       items.forEach((item) => appendRepo(item));
     },
@@ -119,7 +129,6 @@ function makeSearch(event) {
       searchForm.reset();
     }
   );
-  return false;
 }
 
 function toggleShowResults(textInput = '') {
