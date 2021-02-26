@@ -98,7 +98,6 @@ function makeSearch(event) {
 
   event.preventDefault();
 
-<<<<<<< HEAD
   searchRepos(
     searchInput.value,
     () => {
