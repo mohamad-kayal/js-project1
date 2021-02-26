@@ -98,6 +98,7 @@ function makeSearch(event) {
 
   event.preventDefault();
 
+<<<<<<< HEAD
   searchRepos(
     searchInput.value,
     () => {
@@ -129,6 +130,7 @@ function makeSearch(event) {
       items.forEach((item) => appendRepo(item));
     },
     () => {
+
       searchForm.reset();
     }
   );
