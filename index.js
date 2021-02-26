@@ -14,7 +14,7 @@ function doRequest(url, requestInfo) {
   fetch(url, { method: method || 'GET', body: JSON.stringify(body) })
     .then((res) => res.json())
     .then((data) => {
-      if (data) {
+      if (callback) {
         callback(null, data);
       }
     })
@@ -38,7 +38,9 @@ const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
-const toggleShowingResultsElement = document.querySelector('#showingResultsFor');
+const toggleShowingResultsElement = document.querySelector(
+  '#showingResultsFor'
+);
 
 const searchForm = document.querySelector('#form');
 
@@ -90,11 +92,11 @@ const appendRepo = ({
 
 // combining the onClick with the form
 function makeSearch(event) {
-  event.preventDefault();
-
   if (errorElement.innerText != '') {
     errorElement.innerText = '';
   }
+
+  event.preventDefault();
 
   searchRepos(
     searchInput.value,
@@ -103,12 +105,12 @@ function makeSearch(event) {
       toggleLoading(true);
     },
     (error, data) => {
-      //stopping the loading icon when the call is over
       toggleLoading();
 
       if (error) {
         toggleShowingResultsElement.innerText = '';
         toggleError('Sorry, The request is facing an error right now!');
+
         return;
       }
 
@@ -119,6 +121,7 @@ function makeSearch(event) {
         toggleError(
           'No results for your search, try searching for other repositories!'
         );
+
         return;
       }
 
@@ -131,7 +134,7 @@ function makeSearch(event) {
   );
 }
 
-function toggleShowResults(textInput = '') {
+function toggleShowResults(textInput) {
   toggleShowingResultsElement.style.display = 'block';
   toggleShowingResultsElement.innerText = `Showing Results for: ${textInput}`;
 }
