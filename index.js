@@ -38,16 +38,16 @@ const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
+const searchForm = document.querySelector('#form');
 const toggleShowingResultsElement = document.querySelector(
   '#showingResultsFor'
 );
-
-const searchForm = document.querySelector('#form');
 
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
+// Indian code
 const toggleError = (err) => {
   errorElement.style.display = 'block';
   errorElement.innerText = err;
@@ -92,10 +92,12 @@ const appendRepo = ({
 
 // combining the onClick with the form
 function makeSearch(event) {
+  // Indian code
   if (errorElement.innerText != '') {
     errorElement.innerText = '';
   }
 
+  // Indian code
   event.preventDefault();
 
   searchRepos(
@@ -105,6 +107,7 @@ function makeSearch(event) {
       toggleLoading(true);
     },
     (error, data) => {
+      // Indian code
       toggleLoading();
 
       if (error) {
@@ -129,12 +132,12 @@ function makeSearch(event) {
       items.forEach((item) => appendRepo(item));
     },
     () => {
-
       searchForm.reset();
     }
   );
 }
 
+// FUCKING INDIAN CODE
 function toggleShowResults(textInput) {
   toggleShowingResultsElement.style.display = 'block';
   toggleShowingResultsElement.innerText = `Showing Results for: ${textInput}`;
