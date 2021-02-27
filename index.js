@@ -38,16 +38,16 @@ const searchInput = document.querySelector('#input');
 const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
+const searchForm = document.querySelector('#form');
 const toggleShowingResultsElement = document.querySelector(
   '#showingResultsFor'
 );
-
-const searchForm = document.querySelector('#form');
 
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
+// Indian code
 const toggleError = (err) => {
   errorElement.style.display = 'block';
   errorElement.innerText = err;
@@ -92,48 +92,62 @@ const appendRepo = ({
 
 // combining the onClick with the form
 function makeSearch(event) {
+  // Indian code
   if (errorElement.innerText != '') {
     errorElement.innerText = '';
   }
 
+  // Indian code
   event.preventDefault();
 
   searchRepos(
     searchInput.value,
-    () => {
-      listElement.innerHTML = '';
-      toggleLoading(true);
-    },
-    (error, data) => {
-      toggleLoading();
-
-      if (error) {
-        toggleShowingResultsElement.innerText = '';
-        toggleError('Sorry, The request is facing an error right now!');
-
-        return;
-      }
-
-      const { items } = data;
-
-      if (!items.length) {
-        toggleShowingResultsElement.innerText = '';
-        toggleError(
-          'No results for your search, try searching for other repositories!'
-        );
-
-        return;
-      }
-
-      toggleShowResults(searchInput.value);
-      items.forEach((item) => appendRepo(item));
-    },
-    () => {
-      searchForm.reset();
-    }
+    searchStartCB,
+    searchSuccessErrorCB,
+    searchFinalCB
   );
 }
 
+function searchStartCB() {
+  listElement.innerHTML = '';
+
+  toggleLoading(true);
+}
+
+function searchSuccessErrorCB(error, data) {
+  // Indian code
+  toggleLoading();
+
+  if (error) {
+    toggleShowingResultsElement.innerText = '';
+
+    toggleError('Sorry, The request is facing an error right now!');
+
+    return;
+  }
+
+  const { items } = data;
+
+  if (!items.length) {
+    toggleShowingResultsElement.innerText = '';
+
+    toggleError(
+      'No results for your search, try searching for other repositories!'
+    );
+
+    return;
+  }
+
+  toggleShowResults(searchInput.value);
+
+  items.forEach((item) => appendRepo(item));
+}
+
+function searchFinalCB() {
+  searchForm.reset();
+}
+
+// FUCKING INDIAN CODE
 function toggleShowResults(textInput) {
   toggleShowingResultsElement.style.display = 'block';
   toggleShowingResultsElement.innerText = `Showing Results for: ${textInput}`;
