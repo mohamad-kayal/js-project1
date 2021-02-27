@@ -102,39 +102,49 @@ function makeSearch(event) {
 
   searchRepos(
     searchInput.value,
-    () => {
-      listElement.innerHTML = '';
-      toggleLoading(true);
-    },
-    (error, data) => {
-      // Indian code
-      toggleLoading();
-
-      if (error) {
-        toggleShowingResultsElement.innerText = '';
-        toggleError('Sorry, The request is facing an error right now!');
-
-        return;
-      }
-
-      const { items } = data;
-
-      if (!items.length) {
-        toggleShowingResultsElement.innerText = '';
-        toggleError(
-          'No results for your search, try searching for other repositories!'
-        );
-
-        return;
-      }
-
-      toggleShowResults(searchInput.value);
-      items.forEach((item) => appendRepo(item));
-    },
-    () => {
-      searchForm.reset();
-    }
+    searchStartCB,
+    searchSuccessErrorCB,
+    searchFinalCB
   );
+}
+
+function searchStartCB() {
+  listElement.innerHTML = '';
+
+  toggleLoading(true);
+}
+
+function searchSuccessErrorCB(error, data) {
+  // Indian code
+  toggleLoading();
+
+  if (error) {
+    toggleShowingResultsElement.innerText = '';
+
+    toggleError('Sorry, The request is facing an error right now!');
+
+    return;
+  }
+
+  const { items } = data;
+
+  if (!items.length) {
+    toggleShowingResultsElement.innerText = '';
+
+    toggleError(
+      'No results for your search, try searching for other repositories!'
+    );
+
+    return;
+  }
+
+  toggleShowResults(searchInput.value);
+
+  items.forEach((item) => appendRepo(item));
+}
+
+function searchFinalCB() {
+  searchForm.reset();
 }
 
 // FUCKING INDIAN CODE
