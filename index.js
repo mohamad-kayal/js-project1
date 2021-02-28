@@ -39,16 +39,17 @@ const listElement = document.querySelector('#response');
 const loadingElement = document.querySelector('#loading');
 const errorElement = document.querySelector('#error');
 const searchForm = document.querySelector('#form');
-const toggleShowingResultsElement = document.querySelector(
-  '#showingResultsFor'
+const elementResults = document.querySelector(
+  '#showResults'
 );
 
-const toggleLoading = (show = false) => {
+// renamed the function from toggleLoading to handleLoading
+const handleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
 };
 
-// Indian code
-const toggleError = (err) => {
+// renamed the function from toggleError to handleError - removed Indian code
+const handleError = (err) => {
   errorElement.style.display = 'block';
   errorElement.innerText = err;
 };
@@ -92,13 +93,12 @@ const appendRepo = ({
 
 // combining the onClick with the form
 function makeSearch(event) {
-  // Indian code
+  // moved event.preventDefault() to the top - indian code
+  event.preventDefault();
+
   if (errorElement.innerText != '') {
     errorElement.innerText = '';
-  }
-
-  // Indian code
-  event.preventDefault();
+  };
 
   searchRepos(
     searchInput.value,
@@ -110,35 +110,29 @@ function makeSearch(event) {
 
 function searchStartCB() {
   listElement.innerHTML = '';
-
-  toggleLoading(true);
+  handleLoading(true);
 }
 
 function searchSuccessErrorCB(error, data) {
-  // Indian code
-  toggleLoading();
+  // renamed the functions and variables - Indian code
+  handleLoading();
 
   if (error) {
-    toggleShowingResultsElement.innerText = '';
-
-    toggleError('Sorry, The request is facing an error right now!');
+    elementResults.innerText = '';
+    handleError('Sorry, The request is facing an error right now!');
 
     return;
   }
 
   const { items } = data;
-
+  // renamed the showingResultsElement to elementResults and removed the error function - removed indian code
   if (!items.length) {
-    toggleShowingResultsElement.innerText = '';
-
-    toggleError(
-      'No results for your search, try searching for other repositories!'
-    );
+    elementResults.innerText = 'No Repositories found. Try searching for another!';
 
     return;
   }
 
-  toggleShowResults(searchInput.value);
+  searchResults(searchInput.value);
 
   items.forEach((item) => appendRepo(item));
 }
@@ -147,8 +141,8 @@ function searchFinalCB() {
   searchForm.reset();
 }
 
-// FUCKING INDIAN CODE
-function toggleShowResults(textInput) {
-  toggleShowingResultsElement.style.display = 'block';
-  toggleShowingResultsElement.innerText = `Showing Results for: ${textInput}`;
+// renamed the function and variables - indian code 
+function searchResults(textInput) {
+  elementResults.style.display = 'block';
+  elementResults.innerText = `Showing Results for: ${textInput}`;
 }
