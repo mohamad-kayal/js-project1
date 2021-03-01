@@ -137,7 +137,7 @@ function searchFinalCB() {
 
 function toggleSearchResults(textInput = '') {
   textInput === ''
-  ? (elementResults.style.display = 'none', elementResults.innerText = '')
-  : (elementResults.style.display = 'block', elementResults.innerText = `Showing Results for: ${textInput}`);
-  
+    ? ((elementResults.style.display = 'none'), (elementResults.innerText = ''))
+    : ((elementResults.style.display = 'block'),
+      (elementResults.innerText = `Showing Results for: ${textInput}`));
 }
