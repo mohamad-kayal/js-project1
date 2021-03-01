@@ -46,9 +46,7 @@ const toggleLoading = (show = false) => {
 };
 
 const toggleError = (err = '') => {
-  err === ''
-    ? (errorElement.style.display = 'none')
-    : (errorElement.style.display = 'block');
+  errorElement.style.display = err === '' ? 'none' : 'block';
   errorElement.innerText = err;
 };
 
@@ -136,8 +134,6 @@ function searchFinalCB() {
 }
 
 function toggleSearchResults(textInput = '') {
-  textInput === ''
-    ? ((elementResults.style.display = 'none'), (elementResults.innerText = ''))
-    : ((elementResults.style.display = 'block'),
-      (elementResults.innerText = `Showing Results for: ${textInput}`));
+  elementResults.style.display = textInput === '' ? 'none' : 'block';
+  elementResults.innerText = `Showing Results for: ${textInput}`;
 }
