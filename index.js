@@ -1,5 +1,12 @@
 const GITHUB_API_URL = 'https://api.github.com';
 
+let searchInput;
+let listElement;
+let loadingElement;
+let errorElement;
+let searchForm;
+let elementResults;
+
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
 }
@@ -34,12 +41,14 @@ function searchRepos(query, startCB, callback, endCB) {
   doRequest(getGithubRepoSearchUrl(query), { startCB, callback, endCB });
 }
 
-const searchInput = document.querySelector('#input');
-const listElement = document.querySelector('#response');
-const loadingElement = document.querySelector('#loading');
-const errorElement = document.querySelector('#error');
-const searchForm = document.querySelector('#form');
-const elementResults = document.querySelector('#showResults');
+window.onload = () => {
+  searchInput = document.querySelector('#input');
+  listElement = document.querySelector('#response');
+  loadingElement = document.querySelector('#loading');
+  errorElement = document.querySelector('#error');
+  searchForm = document.querySelector('#form');
+  elementResults = document.querySelector('#showResults');
+};
 
 const toggleLoading = (show = false) => {
   loadingElement.style.display = show ? 'block' : 'none';
