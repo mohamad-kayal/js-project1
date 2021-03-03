@@ -119,7 +119,7 @@ function searchSuccessErrorCB(error, data) {
   toggleLoading();
 
   if (error) {
-    toggleSearchResults();
+    elementResults.innerText = '';
     toggleError('Sorry, The request is facing an error right now!');
 
     return;
@@ -128,7 +128,7 @@ function searchSuccessErrorCB(error, data) {
   const { items } = data;
 
   if (!items.length) {
-    toggleSearchResults('No Repositories found. Try searching for another!');
+    elementResults.innerText = 'No Repositories found. Try searching for another!';
 
     return;
   }
