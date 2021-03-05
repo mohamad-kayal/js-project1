@@ -119,7 +119,7 @@ function searchSuccessErrorCB(error, data) {
   toggleLoading();
 
   if (error) {
-    elementResults.innerText = '';
+    toggleSearchResults();
     toggleError('Sorry, The request is facing an error right now!');
 
     return;
@@ -128,12 +128,12 @@ function searchSuccessErrorCB(error, data) {
   const { items } = data;
 
   if (!items.length) {
-    elementResults.innerText = 'No Repositories found. Try searching for another!';
+    toggleSearchResults('No Repositories found. Try searching for another!');
 
     return;
   }
 
-  toggleSearchResults(searchInput.value);
+  toggleSearchResults(`Showing Results for: ${searchInput.value}`);
 
   items.forEach((item) => appendRepo(item));
 }
@@ -142,7 +142,7 @@ function searchFinalCB() {
   searchForm.reset();
 }
 
-function toggleSearchResults(textInput = '') {
-  elementResults.style.display = textInput === '' ? 'none' : 'block';
-  elementResults.innerText = `Showing Results for: ${textInput}`;
+function toggleSearchResults(results = '') {
+  elementResults.style.display = results === '' ? 'none' : 'block';
+  elementResults.innerText = results;
 }
