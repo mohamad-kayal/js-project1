@@ -49,7 +49,7 @@ window.onload = () => {
   loadingElement = document.querySelector('#loading');
   errorElement = document.querySelector('#error');
   searchForm = document.querySelector('#form');
-  elementResults = document.querySelector('#showResults');
+  elementResults = document.querySelector('#searchResultsHeader');
 };
 
 const toggleLoading = (show = false) => {
