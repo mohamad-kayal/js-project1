@@ -1,3 +1,5 @@
+import '../index.css';
+
 const GITHUB_API_URL = 'https://api.github.com';
 
 let searchInput;
@@ -109,6 +111,7 @@ function makeSearch(event) {
     searchFinalCB
   );
 }
+window.makeSearch = makeSearch;
 
 function searchStartCB() {
   listElement.innerHTML = '';
