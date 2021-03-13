@@ -1,4 +1,3 @@
-import '../index.css';
 const GITHUB_API_URL = 'https://api.github.com';
 
 let searchInput;
@@ -48,7 +47,7 @@ window.onload = () => {
   loadingElement = document.querySelector('#loading');
   errorElement = document.querySelector('#error');
   searchForm = document.querySelector('#form');
-  elementResults = document.querySelector('#searchResultsHeader');
+  elementResults = document.querySelector('#search-results-header');
 
   searchForm.onsubmit = makeSearch;
 };
@@ -103,6 +102,7 @@ const appendRepo = ({
 function makeSearch(event) {
   event.preventDefault();
   toggleError();
+  toggleSearchResults();
 
   searchRepos(
     searchInput.value,
@@ -111,7 +111,6 @@ function makeSearch(event) {
     searchFinalCB
   );
 }
-window.makeSearch = makeSearch;
 
 function searchStartCB() {
   listElement.innerHTML = '';

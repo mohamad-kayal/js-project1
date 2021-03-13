@@ -2,12 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'production',
-  entry: ['./src/index.js'],
+  entry: ['./src/index.js' , './src/index.css'],
 
   output: {
     filename: 'main.[contenthash].js',
@@ -17,9 +17,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
     }),
-    new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css"
-    }),
+    new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new CleanWebpackPlugin(),
   ],
   module: {
@@ -32,9 +30,6 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    minimizer: [
-      new CssMinimizerPlugin(),
-      new TerserPlugin()
-    ],
+    minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
   },
 };
