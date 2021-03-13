@@ -1,5 +1,4 @@
 import '../index.css';
-
 const GITHUB_API_URL = 'https://api.github.com';
 
 let searchInput;
@@ -50,6 +49,8 @@ window.onload = () => {
   errorElement = document.querySelector('#error');
   searchForm = document.querySelector('#form');
   elementResults = document.querySelector('#searchResultsHeader');
+
+  searchForm.onsubmit = makeSearch;
 };
 
 const toggleLoading = (show = false) => {
@@ -101,7 +102,6 @@ const appendRepo = ({
 // combining the onClick with the form
 function makeSearch(event) {
   event.preventDefault();
-
   toggleError();
 
   searchRepos(
