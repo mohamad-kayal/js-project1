@@ -84,10 +84,6 @@ body {
   }
 }
 
-#error {
-  display: none;
-}
-
-#search-results-header {
+.init-state-no-display {
   display: none;
 }
