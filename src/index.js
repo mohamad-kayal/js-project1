@@ -100,6 +100,7 @@ const appendRepo = ({
 
 // combining the onClick with the form
 function makeSearch(event) {
+  
   event.preventDefault();
   toggleError();
   toggleSearchResults();

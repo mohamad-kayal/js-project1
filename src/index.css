@@ -83,3 +83,11 @@ body {
     transform: rotate(360deg);
   }
 }
+
+#error {
+  display: none;
+}
+
+#search-results-header {
+  display: none;
+}
