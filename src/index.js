@@ -47,7 +47,9 @@ window.onload = () => {
   loadingElement = document.querySelector('#loading');
   errorElement = document.querySelector('#error');
   searchForm = document.querySelector('#form');
-  elementResults = document.querySelector('#showResults');
+  elementResults = document.querySelector('#search-results-header');
+
+  searchForm.onsubmit = makeSearch;
 };
 
 const toggleLoading = (show = false) => {
@@ -99,8 +101,8 @@ const appendRepo = ({
 // combining the onClick with the form
 function makeSearch(event) {
   event.preventDefault();
-
   toggleError();
+  toggleSearchResults();
 
   searchRepos(
     searchInput.value,
