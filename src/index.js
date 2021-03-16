@@ -9,7 +9,7 @@ let elementResults;
 
 function getGithubRepoSearchUrl(query) {
   return `${GITHUB_API_URL}/search/repositories?q=${query}&page=1&per_page=10`;
-}
+} 
 
 function doRequest(url, requestInfo) {
   const { method, body, startCB, callback, endCB } = requestInfo;
@@ -148,3 +148,5 @@ function toggleSearchResults(results = '') {
   elementResults.style.display = results === '' ? 'none' : 'block';
   elementResults.innerText = results;
 }
+
+module.exports = { getGithubRepoSearchUrl,doRequest,searchRepos, toggleLoading, toggleError, appendRepo, makeSearch, searchStartCB, searchSuccessErrorCB, searchFinalCB, toggleSearchResults };
